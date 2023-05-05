@@ -1,6 +1,6 @@
 {
   "name": "@drew-daniels/liaison-core",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "type": "module",
   "types": "lib/index.d.ts",
   "module": "lib/index.js",
