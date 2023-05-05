@@ -8,8 +8,5 @@ export default defineConfig({
       entry: resolve(__dirname, 'lib/main.ts'),
       name: 'LiaisonCore',
     },
-    rollupOptions: {
-
-    }
   },
 })
