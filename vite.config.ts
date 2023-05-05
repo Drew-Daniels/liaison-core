@@ -7,6 +7,7 @@ export default defineConfig({
       entry: 'src/index.ts',
       name: 'LiaisonCore',
       fileName: 'index',
+      formats: ['es']
     },
   },
   cacheDir: '.vite'
