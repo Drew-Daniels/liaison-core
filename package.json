@@ -1,13 +1,13 @@
 {
   "name": "@drew-daniels/liaison-core",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "type": "module",
   "types": "./lib/index.d.ts",
   "module": "./lib/index.js",
   "author": "Drew Daniels",
   "license": "MIT",
   "files": [
-    "dist"
+    "lib"
   ],
   "exports": {
     ".": {
