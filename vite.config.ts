@@ -1,12 +1,13 @@
-import { resolve } from 'path';
 import { defineConfig } from 'vite'
 
 // https://vitejs.dev/config/
 export default defineConfig({
   build: {
     lib: {
-      entry: resolve(__dirname, 'lib/main.ts'),
+      entry: 'src/index.ts',
       name: 'LiaisonCore',
+      fileName: 'index',
     },
   },
+  cacheDir: '.vite'
 })
