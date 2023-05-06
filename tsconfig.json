@@ -5,6 +5,7 @@
     "target": "ESNext",
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "module": "ESNext",
+    "moduleResolution": "node",
     "skipLibCheck": true,
     "noEmit": false,
     "strict": true,
@@ -13,4 +14,5 @@
     "noFallthroughCasesInSwitch": true
   },
   "include": ["src"],
+  "exclude": ["src/**/*.test.ts"]
 }
