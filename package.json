@@ -25,7 +25,8 @@
     "@typescript-eslint/parser": "^5.57.1",
     "eslint": "^8.38.0",
     "mocha": "^10.2.0",
-    "typescript": "^5.0.2"
+    "typescript": "^5.0.2",
+    "vitest": "^0.31.0"
   },
   "packageManager": "yarn@3.5.1",
   "repository": {
