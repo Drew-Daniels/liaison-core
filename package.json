@@ -1,6 +1,6 @@
 {
   "name": "liaison-core",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "author": "Drew Daniels",
   "description": "A simple messaging library meant to enable easy CORS communication between windows and embedded iframes - using the browser postMessage API.",
   "license": "MIT",
@@ -19,7 +19,9 @@
   "scripts": {
     "test": "vitest",
     "build": "tsc",
-    "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0"
+    "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "prepublish": "build",
+    "publish": "prepublish && npm publish"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.57.1",
