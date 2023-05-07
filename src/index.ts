@@ -79,9 +79,6 @@ export interface IClient {
     classes?: Array<string> | undefined,
   }
   
-  // GLOBALS
-  let parentInitialized = false;
-  
   // CORE API
   export function Parent({ iframeOpts: { containerId, id, src, classes }, effects }: ParentOpts): IParent {
     _validateUrl(src);
@@ -105,23 +102,20 @@ export interface IClient {
      * Initializes handlers to listen for message events from the embedded iframe.
      */
     function init() {
-      if (!parentInitialized) {
-        _validateIFrameContainerId();
-        _validateIFrameId();
-        const container = document.getElementById(containerId);
-        let iframe: HTMLIFrameElement;
-        if (!(document.getElementById(id))) {
-          iframe = document.createElement('iframe');
-          iframe.id = id;
-          iframe.src = src;
-          if (Array.isArray(classes)) {
-            classes.forEach(cls => iframe.classList.add(cls));
-          }
-          container!.appendChild(iframe);
+      _validateIFrameContainerId();
+      _validateIFrameId();
+      const container = document.getElementById(containerId);
+      let iframe: HTMLIFrameElement;
+      if (!(document.getElementById(id))) {
+        iframe = document.createElement('iframe');
+        iframe.id = id;
+        iframe.src = src;
+        if (Array.isArray(classes)) {
+          classes.forEach(cls => iframe.classList.add(cls));
         }
-        window.addEventListener('message', _onMessageEvent);
+        container!.appendChild(iframe);
       }
-      parentInitialized = true;
+      window.addEventListener('message', _onMessageEvent);
 
       function _validateIFrameContainerId() {
         const container = document.getElementById(containerId);
