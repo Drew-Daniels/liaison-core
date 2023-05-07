@@ -222,15 +222,13 @@ describe('IFrame', () => {
     const validOpts: IFrameOpts = {
         parentOrigin: 'http://localhost:3000',
         effects: {
-
+            noOp: () => {},
         }
     }
 
     describe('Constructor', () => {
         describe('Returns an object with: ', () => {
             const i = IFrame(validOpts);
-            expect(i.init)
-            expect(i.callParentEffect)
             it('init() method', () => {
                 expect(typeof i.init === 'function').toBe(true);
             });
@@ -244,14 +242,26 @@ describe('IFrame', () => {
     });
     describe('Options', () => {
         it('Throws when parentOrigin is not a valid URL', () => {
-        
+            expect(() => {
+                IFrame({
+                    ...validOpts, 
+                    parentOrigin: 'invalid-url'  
+                });
+            }).toThrow();
         });
         it('Throws when effects are not functions', () => {
-
+            expect(() => {
+                IFrame({
+                    ...validOpts,
+                    //@ts-ignore
+                    effects: undefined,
+                })
+            }).toThrow();
         });
     });
     describe.todo('Lifecycle methods', () => {
         describe.todo('init()');
         describe.todo('destroy()');
     });
+    describe.todo('callParentEffect');
 });
