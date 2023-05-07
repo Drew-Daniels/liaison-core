@@ -1,5 +1,5 @@
 import { describe, expect, it, beforeEach, afterEach } from 'vitest';
-import { IParent, Parent, Child, IFrameOpts, IParentIFrameOpts } from "./index";
+import { IParent, Parent, IFrame, IFrameOpts, IParentIFrameOpts } from "./index";
 
 describe('Parent', () => {
     const VALID_IFRAME_CONTAINER_ID = 'valid-iframe-container-id';
@@ -228,7 +228,7 @@ describe('IFrame', () => {
 
     describe('Constructor', () => {
         describe('Returns an object with: ', () => {
-            const i = Child(validOpts);
+            const i = IFrame(validOpts);
             expect(i.init)
             expect(i.callParentEffect)
             it('init() method', () => {
@@ -242,8 +242,13 @@ describe('IFrame', () => {
             });
         });
     });
-    describe.todo('Options', () => {
+    describe('Options', () => {
+        it('Throws when parentOrigin is not a valid URL', () => {
+        
+        });
+        it('Throws when effects are not functions', () => {
 
+        });
     });
     describe.todo('Lifecycle methods', () => {
         describe.todo('init()');

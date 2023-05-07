@@ -169,7 +169,7 @@ export interface IClient {
     }
   
     /**
-     * Posts a message to the Child window - where the message is an object that contains:
+     * Posts a message to the IFrame window - where the message is an object that contains:
      * 1. The name ('functionName') of the function defined on the Parent object that should be called.
      * 2. The arguments ('args') that should be provided to that function when called.
      * @param opts
@@ -182,7 +182,7 @@ export interface IClient {
     }
   }
   
-  export function Child({ parentOrigin, effects }: IFrameOpts): IFrame {
+  export function IFrame({ parentOrigin, effects }: IFrameOpts): IFrame {
 
     _validateUrl(parentOrigin);
     _validateEffects(effects);
@@ -226,7 +226,7 @@ export interface IClient {
      * @param methodOpts 
      */
     function callParentEffect(signal: Signal) {
-      if (top == null) throw new Error('Child must be rendered within an embedded iframe');
+      if (top == null) throw new Error('IFrame model must be rendered within an embedded iframe');
       top.postMessage(signal, parentOrigin);
     }
   }
