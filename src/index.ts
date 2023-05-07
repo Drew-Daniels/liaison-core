@@ -272,7 +272,8 @@ export interface IClient {
       const effectNames = Object.keys(effects);
       // TODO: Enforce better checking here to ensure that functions passed as effects match the Effect function signature.
       effectNames.forEach(name => {
-        const isEffect = typeof effects[name] === 'function';
+        const effect = effects[name as keyof typeof effects]
+        const isEffect = typeof effect === 'function';
         if (!isEffect) throw new Error(`${name} is not a function`);
       });
     } else {
