@@ -84,7 +84,9 @@ export interface IClient {
   
   // CORE API
   export function Parent({ iframeOpts: { containerId, id, src, classes }, effects }: ParentOpts): IParent {
-    _validate();
+    _validateUrl(src);
+    _validateIFrameClasses();
+    _validateEffects(effects);
 
     return {
       init,
@@ -92,40 +94,11 @@ export interface IClient {
       destroy,
     }
 
-    function _validate() {
-      _validateIFrameSrc();
-      _validateIFrameClasses();
-      _validateParentEffects();
-    }
-
-    function _validateIFrameSrc() {
-      if (!(validUrl(src))) throw new Error(`${src} is not a valid url`);
-
-      function validUrl(u: string) {
-        let url;
-        try {
-          url = new URL(u);
-        } catch {
-          return false;
-        }
-        return url.protocol === 'http:' || url.protocol === 'https:';
-      }
-    }
-
     function _validateIFrameClasses() {
       if (!(validClasses())) throw new Error('iframeOpts.classes must be an array of strings');
       function validClasses() {
         return classes?.every(cls => typeof cls === 'string');
       }
-    }
-
-    function _validateParentEffects() {
-      const effectNames = Object.keys(effects);
-      // TODO: Enforce better checking here to ensure that functions passed as effects match the Effect function signature.
-      effectNames.forEach(name => {
-        const isEffect = typeof effects[name] === 'function';
-        if (!isEffect) throw new Error(`${name} is not a function`);
-      });
     }
 
     /**
@@ -210,12 +183,16 @@ export interface IClient {
   }
   
   export function Child({ parentOrigin, effects }: IFrameOpts): IFrame {
+
+    _validateUrl(parentOrigin);
+    _validateEffects(effects);
+
     return {
       init,
       callParentEffect,
       destroy,
     }
-  
+
     /**
      * Initializes handlers to listen for message events from the parent window.
      */
@@ -276,3 +253,29 @@ export interface IClient {
     return false;
   }
   
+  function _validateUrl(u: string) {
+    if (!(_validUrl(u))) throw new Error(`${u} is not a valid url`);
+  }
+
+  function _validUrl(u: string) {
+    let url;
+    try {
+      url = new URL(u);
+    } catch {
+      return false;
+    }
+    return url.protocol === 'http:' || url.protocol === 'https:';
+  }
+
+  function _validateEffects(effects: unknown) {
+    if (typeof effects === 'object' && effects !== null) {
+      const effectNames = Object.keys(effects);
+      // TODO: Enforce better checking here to ensure that functions passed as effects match the Effect function signature.
+      effectNames.forEach(name => {
+        const isEffect = typeof effects[name] === 'function';
+        if (!isEffect) throw new Error(`${name} is not a function`);
+      });
+    } else {
+      throw new Error('effects must be an object where each property is a function')
+    }
+  }

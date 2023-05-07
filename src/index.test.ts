@@ -1,5 +1,5 @@
 import { describe, expect, it, beforeEach, afterEach } from 'vitest';
-import { IParent, Parent } from "./index";
+import { IParent, Parent, Child, IFrameOpts, IParentIFrameOpts } from "./index";
 
 describe('Parent', () => {
     const VALID_IFRAME_CONTAINER_ID = 'valid-iframe-container-id';
@@ -33,7 +33,7 @@ describe('Parent', () => {
         document.body.innerHTML = `<div id="${VALID_IFRAME_CONTAINER_ID}"></div>`;
     }
 
-    const validIFrameOpts = {
+    const validIFrameOpts: IParentIFrameOpts = {
         containerId: VALID_IFRAME_CONTAINER_ID,
         id: VALID_IFRAME_ID,
         src: VALID_IFRAME_SRC,
@@ -213,16 +213,40 @@ describe('Parent', () => {
             });
         });
     });
-    // describe('callIFrameEffect', () => {
+    describe.todo('callIFrameEffect', () => {
 
-    // });
+    });
 });
 
-// describe('IFrame', () => {
-//     describe('Options', () => {
+describe('IFrame', () => {
+    const validOpts: IFrameOpts = {
+        parentOrigin: 'http://localhost:3000',
+        effects: {
 
-//     });
-//     describe('Lifecycle methods', () => {
+        }
+    }
 
-//     });
-// });
+    describe('Constructor', () => {
+        describe('Returns an object with: ', () => {
+            const i = Child(validOpts);
+            expect(i.init)
+            expect(i.callParentEffect)
+            it('init() method', () => {
+                expect(typeof i.init === 'function').toBe(true);
+            });
+            it('callParentEffect', () => {
+                expect(typeof i.callParentEffect === 'function').toBe(true);
+            });
+            it('destroy() method', () => {
+                expect(typeof i.destroy === 'function').toBe(true);
+            });
+        });
+    });
+    describe.todo('Options', () => {
+
+    });
+    describe.todo('Lifecycle methods', () => {
+        describe.todo('init()');
+        describe.todo('destroy()');
+    });
+});
