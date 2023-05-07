@@ -83,14 +83,78 @@ export interface IClient {
   let parentInitialized = false;
   
   // CORE API
-  export function Parent({ effects, iframeOpts: { id, containerId, src, classes } }: ParentOpts): IParent {
-  
+  export function Parent(args: ParentOpts): IParent {
+    validate(args);
+
+    const { iframeOpts: { id, containerId, src, classes }, effects } = args;
+
     return {
       init,
       callIFrameEffect,
       destroy,
     }
   
+    function validate(args: ParentOpts) {
+      const { iframeOpts: { id, containerId, src, classes }, effects } = args;
+      _validIFrameContainerId();
+      _validateIFrameId();
+      _validateIFrameSrc();
+      _validateIFrameClasses();
+      _validateParentEffects();
+
+      function _validIFrameContainerId() {
+        const container = document.getElementById(containerId);
+        if (!container) throw new Error(`An element with an id of ${containerId} cannot be found`);
+        if (container && (!(isContainer(container)))) throw new Error(`An element with an id of ${containerId} was found, but was a ${container.nodeName}.`)
+
+        function isContainer(el: HTMLElement) {
+          console.log('el.nodeName: ', el.nodeName);
+          return el.nodeName === 'DIV';
+        }
+      }
+
+      function _validateIFrameId() {
+        const iframe = document.getElementById(id);
+        if (iframe && (!(isIFrame(iframe)))) {
+          throw new Error(`An element with an id of ${id} was found, but was actually a ${iframe.nodeName}`)
+        }
+
+        function isIFrame(el: HTMLElement) {
+          return el.nodeName === 'IFRAME'
+        }
+      }
+
+      function _validateIFrameSrc() {
+        if (!(validUrl(src))) throw new Error(`${src} is not a valid url`);
+
+        function validUrl(u: string) {
+          let url;
+          try {
+            url = new URL(u);
+          } catch {
+            return false;
+          }
+          return url.protocol === 'http:' || url.protocol === 'https:';
+        }
+      }
+
+      function _validateIFrameClasses() {
+        if (!(validClasses())) throw new Error('iframeOpts.classes must be an array of strings');
+        function validClasses() {
+          return classes?.every(cls => typeof cls === 'string');
+        }
+      }
+
+      function _validateParentEffects() {
+        const effectNames = Object.keys(effects);
+        // TODO: Enforce better checking here to ensure that functions passed as effects match the Effect function signature.
+        effectNames.forEach(name => {
+          const isEffect = typeof effects[name] === 'function';
+          if (!isEffect) throw new Error(`${name} is not a function`);
+        });
+      }
+    }
+
     /**
      * Initializes handlers to listen for message events from the embedded iframe.
      */
