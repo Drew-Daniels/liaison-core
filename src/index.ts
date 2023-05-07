@@ -84,9 +84,9 @@ export interface IClient {
   
   // CORE API
   export function Parent(args: ParentOpts): IParent {
-    validate(args);
-
     const { iframeOpts: { containerId, id, src, classes }, effects } = args;
+
+    _validate();
 
     return {
       init,
@@ -94,63 +94,59 @@ export interface IClient {
       destroy,
     }
   
-    function validate(args: ParentOpts) {
-      const { iframeOpts: { id, containerId, src, classes }, effects } = args;
-      _validIFrameContainerId();
-      _validateIFrameId();
+    function _validateParentEffects() {
+      const effectNames = Object.keys(effects);
+      // TODO: Enforce better checking here to ensure that functions passed as effects match the Effect function signature.
+      effectNames.forEach(name => {
+        const isEffect = typeof effects[name] === 'function';
+        if (!isEffect) throw new Error(`${name} is not a function`);
+      });
+    }
+
+    function _validate() {
       _validateIFrameSrc();
       _validateIFrameClasses();
       _validateParentEffects();
+    }
 
-      function _validIFrameContainerId() {
-        const container = document.getElementById(containerId);
-        if (!container) throw new Error(`An element with an id of ${containerId} cannot be found`);
-        if (container && (!(isContainer(container)))) throw new Error(`An element with an id of ${containerId} was found, but was a ${container.nodeName}.`)
+    function _validateIFrameContainerId() {
+      const container = document.getElementById(containerId);
+      if (!container) throw new Error(`An element with an id of ${containerId} cannot be found`);
+      if (container && (!(isContainer(container)))) throw new Error(`An element with an id of ${containerId} was found, but was a ${container.nodeName}.`)
+    }
 
-        function isContainer(el: HTMLElement) {
-          return el.nodeName === 'DIV';
-        }
+    function isContainer(el: HTMLElement) {
+      return el.nodeName === 'DIV';
+    }
+
+    function _validateIFrameId() {
+      const iframe = document.getElementById(id);
+      if (iframe && (!(isIFrame(iframe)))) {
+        throw new Error(`An element with an id of ${id} was found, but was actually a ${iframe.nodeName}`)
       }
 
-      function _validateIFrameId() {
-        const iframe = document.getElementById(id);
-        if (iframe && (!(isIFrame(iframe)))) {
-          throw new Error(`An element with an id of ${id} was found, but was actually a ${iframe.nodeName}`)
-        }
-
-        function isIFrame(el: HTMLElement) {
-          return el.nodeName === 'IFRAME'
-        }
+      function isIFrame(el: HTMLElement) {
+        return el.nodeName === 'IFRAME'
       }
+    }
+    function _validateIFrameSrc() {
+      if (!(validUrl(src))) throw new Error(`${src} is not a valid url`);
 
-      function _validateIFrameSrc() {
-        if (!(validUrl(src))) throw new Error(`${src} is not a valid url`);
-
-        function validUrl(u: string) {
-          let url;
-          try {
-            url = new URL(u);
-          } catch {
-            return false;
-          }
-          return url.protocol === 'http:' || url.protocol === 'https:';
+      function validUrl(u: string) {
+        let url;
+        try {
+          url = new URL(u);
+        } catch {
+          return false;
         }
+        return url.protocol === 'http:' || url.protocol === 'https:';
       }
+    }
 
-      function _validateIFrameClasses() {
-        if (!(validClasses())) throw new Error('iframeOpts.classes must be an array of strings');
-        function validClasses() {
-          return classes?.every(cls => typeof cls === 'string');
-        }
-      }
-
-      function _validateParentEffects() {
-        const effectNames = Object.keys(effects);
-        // TODO: Enforce better checking here to ensure that functions passed as effects match the Effect function signature.
-        effectNames.forEach(name => {
-          const isEffect = typeof effects[name] === 'function';
-          if (!isEffect) throw new Error(`${name} is not a function`);
-        });
+    function _validateIFrameClasses() {
+      if (!(validClasses())) throw new Error('iframeOpts.classes must be an array of strings');
+      function validClasses() {
+        return classes?.every(cls => typeof cls === 'string');
       }
     }
 
@@ -159,18 +155,19 @@ export interface IClient {
      */
     function init() {
       if (!parentInitialized) {
+        _validateIFrameContainerId();
+        _validateIFrameId();
         const container = document.getElementById(containerId);
-        if (!container) throw new Error(`A container element with an id of ${containerId} could not be found`);
-      
-        const iframe = document.createElement('iframe');
-        iframe.id = id;
-        iframe.src = src;
-        if (Array.isArray(classes)) {
-          classes.forEach(cls => iframe.classList.add(cls));
+        let iframe: HTMLIFrameElement;
+        if (!(document.getElementById(id))) {
+          iframe = document.createElement('iframe');
+          iframe.id = id;
+          iframe.src = src;
+          if (Array.isArray(classes)) {
+            classes.forEach(cls => iframe.classList.add(cls));
+          }
+          container!.appendChild(iframe);
         }
-      
-        container.appendChild(iframe);
-      
         window.addEventListener('message', _onMessageEvent);
       }
       parentInitialized = true;
