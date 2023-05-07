@@ -259,7 +259,8 @@ describe('IFrame', () => {
             }).toThrow();
         });
     });
-    describe.todo('Lifecycle methods', () => {
+    describe('Lifecycle methods', () => {
+        // TODO: Add mock to check if window.addEventListener and window.removeEventListener called with the right args
         describe.todo('init()');
         describe.todo('destroy()');
     });
