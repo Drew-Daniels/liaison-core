@@ -131,17 +131,6 @@ describe('Parent', () => {
         })
     });
     describe('Lifecycle methods', () => {
-        let parent: IParent;
-        beforeEach(() => {
-            parent = Parent({
-                iframeOpts: {
-                    ...validIFrameOpts,
-                },
-                effects: {
-                    ...validEffects,
-                }
-            })
-        })
         describe('init()', () => {
             describe('containerId', () => {
                 it('Throws when an element with an id of {containerId} cannot be found', () => {
@@ -184,16 +173,49 @@ describe('Parent', () => {
                     expect(() => { p.init() }).toThrow();
                 });
             })
-            it('Adds event listeners to a pre-existing iframe (if an iframe with id of {id} can be found)', () => {
+            it.todo('Adds event listeners to a pre-existing iframe (if an iframe with id of {id} can be found)', () => {
                 _setDOMWithValidContainerAndIFrame();
-                parent.init();
+                const p = Parent({
+                    iframeOpts: {
+                        ...validIFrameOpts,
+                    },
+                    effects: {
+                        ...validEffects,
+                    }
+                })
+                p.init();
             });
-            it('Creates a new iframe and adds event listeners (if an iframe with id of {id} cannot be found)', () => {
-
+            it.todo('Creates a new iframe and adds event listeners (if an iframe with id of {id} cannot be found)', () => {
+                _setDOMWithValidContainerOnly();
+                const p = Parent({
+                    iframeOpts: {
+                        ...validIFrameOpts,
+                    },
+                    effects: {
+                        ...validEffects,
+                    }
+                })
+                p.init();
             })
         });
         // describe('destroy()', () => {
-
+        //     _setDOMWithValidContainerOnly();
+        //     const p = Parent({
+        //         iframeOpts: {
+        //             ...validIFrameOpts,
+        //         },
+        //         effects: {
+        //             ...validEffects,
+        //         }
+        //     })
+        //     p.init();
+        //     p.destroy();
+        //     it('Removes the iframe element from the DOM', () => {
+        //         p.init();
+        //         expect(document.getElementById(VALID_IFRAME_ID)).toBeTruthy();
+        //         p.destroy();
+        //         expect(document.getElementById(VALID_IFRAME_ID)).toBeFalsy();
+        //     });
         // });
     });
     // describe('callIFrameEffect', () => {
