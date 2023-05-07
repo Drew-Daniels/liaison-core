@@ -19,9 +19,7 @@
   "scripts": {
     "test": "vitest",
     "build": "tsc",
-    "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "prepublish": "build",
-    "publish": "prepublish && npm publish"
+    "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.57.1",
