@@ -10,7 +10,6 @@ describe('Parent', () => {
     const INVALID_IFRAME_SRC = 'invalid-iframe-src-url';
 
     function _setDOMWithValidContainerAndIFrame() {
-        _eraseDOM();
         document.body.innerHTML = `
             <div id="${VALID_IFRAME_CONTAINER_ID}">
                 <iframe id="${VALID_IFRAME_ID}" src="${VALID_IFRAME_SRC}" class="${VALID_IFRAME_CLASSES}"></iframe>
@@ -19,12 +18,10 @@ describe('Parent', () => {
     }
 
     function _setDOMWithInvalidContainer() {
-        _eraseDOM();
         document.body.innerHTML = `<p id="${VALID_IFRAME_CONTAINER_ID}"></div>`;
     }
 
     function _setDOMWithInvalidIFrame() {
-        _eraseDOM();
         document.body.innerHTML = `
             <div id="${VALID_IFRAME_CONTAINER_ID}">
                 <p id="${VALID_IFRAME_ID}"></p>
@@ -33,12 +30,7 @@ describe('Parent', () => {
     }
 
     function _setDOMWithValidContainerOnly() {
-        _eraseDOM();
         document.body.innerHTML = `<div id="${VALID_IFRAME_CONTAINER_ID}"></div>`;
-    }
-
-    function _eraseDOM() {
-        document.body.innerHTML = '';
     }
 
     const validIFrameOpts = {
@@ -208,8 +200,6 @@ describe('Parent', () => {
         //             ...validEffects,
         //         }
         //     })
-        //     p.init();
-        //     p.destroy();
         //     it('Removes the iframe element from the DOM', () => {
         //         p.init();
         //         expect(document.getElementById(VALID_IFRAME_ID)).toBeTruthy();
