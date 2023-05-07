@@ -1,4 +1,4 @@
-import { describe, expect, it, beforeEach, afterEach } from 'vitest';
+import { describe, expect, it, beforeEach, afterEach, vi } from 'vitest';
 import { IParent, Parent, IFrame, IFrameOpts, IParentIFrameOpts } from "./index";
 
 describe('Parent', () => {
@@ -214,7 +214,31 @@ describe('Parent', () => {
         });
     });
     describe.todo('callIFrameEffect', () => {
-
+        _setDOMWithValidContainerOnly();
+        const mockParentFn = vi.fn();
+        const mockIFrameFn = vi.fn();
+        const parent = Parent({
+            iframeOpts: {
+                ...validIFrameOpts,
+            },
+            effects: {
+                sayHiToIFrame: mockParentFn,
+            }
+        });
+        parent.init();
+        const iframe = IFrame({
+            parentOrigin: VALID_IFRAME_SRC,
+            effects: {
+                sayHiToParent: mockIFrameFn,
+            }
+        });
+        iframe.init();
+        it('is able to call a function on the iframe model with no arguments', () => {
+            parent.callIFrameEffect({ name: 'sayHiToParent', args: {} });
+            expect(mockIFrameFn).toHaveBeenCalled();
+        });
+        it.todo('is able to call a function with arguments');
+        it.todo('is able to call a')
     });
 });
 
