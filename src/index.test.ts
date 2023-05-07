@@ -1,4 +1,4 @@
-import { describe, expect, it, beforeEach } from 'vitest';
+import { describe, expect, it, beforeEach, afterEach } from 'vitest';
 import { IParent, Parent } from "./index";
 
 describe('Parent', () => {
@@ -43,6 +43,11 @@ describe('Parent', () => {
     const validEffects = {
         noOp: () => {},
     }
+
+    afterEach(() => {
+        document.body.innerHTML = '';
+    })
+
     describe('Constructor', () => {
         it('Returns expected API when provided valid configurations: ', () => {
             const parent = Parent({
@@ -190,23 +195,23 @@ describe('Parent', () => {
                 p.init();
             })
         });
-        // describe('destroy()', () => {
-        //     _setDOMWithValidContainerOnly();
-        //     const p = Parent({
-        //         iframeOpts: {
-        //             ...validIFrameOpts,
-        //         },
-        //         effects: {
-        //             ...validEffects,
-        //         }
-        //     })
-        //     it('Removes the iframe element from the DOM', () => {
-        //         p.init();
-        //         expect(document.getElementById(VALID_IFRAME_ID)).toBeTruthy();
-        //         p.destroy();
-        //         expect(document.getElementById(VALID_IFRAME_ID)).toBeFalsy();
-        //     });
-        // });
+        describe('destroy()', () => {
+            it('Removes the iframe element from the DOM', () => {
+                _setDOMWithValidContainerOnly();
+                const p = Parent({
+                    iframeOpts: {
+                        ...validIFrameOpts,
+                    },
+                    effects: {
+                        ...validEffects,
+                    }
+                })
+                p.init();
+                expect(document.getElementById(VALID_IFRAME_ID)).toBeTruthy();
+                p.destroy();
+                expect(document.getElementById(VALID_IFRAME_ID)).toBeFalsy();
+            });
+        });
     });
     // describe('callIFrameEffect', () => {
 
