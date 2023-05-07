@@ -73,8 +73,8 @@ export interface IClient {
   }
   
   export type IParentIFrameOpts = {
-    id: string,
     containerId: string,
+    id: string,
     src: string,
     classes?: Array<string> | undefined,
   }
@@ -86,7 +86,7 @@ export interface IClient {
   export function Parent(args: ParentOpts): IParent {
     validate(args);
 
-    const { iframeOpts: { id, containerId, src, classes }, effects } = args;
+    const { iframeOpts: { containerId, id, src, classes }, effects } = args;
 
     return {
       init,
@@ -108,7 +108,6 @@ export interface IClient {
         if (container && (!(isContainer(container)))) throw new Error(`An element with an id of ${containerId} was found, but was a ${container.nodeName}.`)
 
         function isContainer(el: HTMLElement) {
-          console.log('el.nodeName: ', el.nodeName);
           return el.nodeName === 'DIV';
         }
       }
