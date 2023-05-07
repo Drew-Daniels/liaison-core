@@ -120,6 +120,7 @@ describe('Parent', () => {
                         Parent({
                             iframeOpts: {
                                 ...validIFrameOpts,
+                                //@ts-ignore
                                 classes: [{}],
                             },
                             effects: {
@@ -129,6 +130,35 @@ describe('Parent', () => {
                     }).toThrow();
                 });
             })
+            describe('Effects', () => {
+                it('Thows when no effects are created', () => {
+                    _setDOMWithValidContainerAndIFrame();
+                    expect(() => { 
+                        Parent({
+                            iframeOpts: {
+                                ...validIFrameOpts,
+                            },
+                            //@ts-ignore
+                            effects: undefined,
+                        })
+                    }).toThrow();
+                });
+                it('Throws when effects are not functions', () => {
+                    _setDOMWithValidContainerAndIFrame();
+                    expect(() => { 
+                        Parent({
+                            iframeOpts: {
+                                ...validIFrameOpts,
+                            },
+                            //@ts-ignore
+                            effects: {
+                                //@ts-ignore
+                                willError: 'spam',
+                            },
+                        })
+                    }).toThrow();
+                })
+            });
         })
     });
 });
