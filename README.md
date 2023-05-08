@@ -27,17 +27,23 @@ const parent = Parent({
 Both `iframeId` and `iframeSrc` _are required_ and errors will be thrown if an iframe with an id of `{id}` and a `src` attribute of `{iframeSrc}` cannot be found on the page when the `Parent.init()` lifecycle method is called.
 
 #### Lifecycle Methods
-The `Parent` model has 2 lifecycle methods:
-1. `init()` - Called after providing initial configurations to `Parent({...})`.
-    - Initializes all of the provided event listeners (`effects`) on the parent window - enabling it to handle signals from the specified iframe. 
-2. `destroy()` - Can be called to remove all event listeners on the parent window that are listening for signals from the specified iframe.
+The `Parent` model sets all event handlers when it is initially called (`Parent({ ... })`)
+
+The `destroy()` method can be called to remove all event listeners on the parent window that are listening for signals from the specified iframe:
+```js
+// event handlers are initialized with window.addEventListener(...)
+const parent = Parent({ ... });
+
+// event handlers are removed with window.removeEventListener(...)
+parent.destroy();
+```
 
 #### Message Handling (`Signals`)
 When the parent window receives a [MessageEvent](https://developer.mozilla.org/en-US/docs/Web/API/MessageEvent), it checks if:
 - If the MessageEvent has an `origin` exactly matching `src`. 
     - If the message has _any other origin_ than `src`, it is completely ignored.
 - If the `origin` matches `src`, the Parent model checks to ensure that the `MessageEvent` matches the expected API (i.e., contains a `Signal`)
-- If the `MessageEvent` contains a `Signal`, this `Signal` can be matched to a corresponding `Effect` on the IFrame model.
+- If the `MessageEvent` contains a `Signal`, this `Signal` is then used to call a corresponding `Effect` on the IFrame model.
 
 #### Effects
 _`Effects`_ (a.k.a., "side effects") are functions defined on the IFrame model, that the Parent model can expect to call on the IFrame model.
