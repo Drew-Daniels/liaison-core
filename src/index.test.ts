@@ -1,5 +1,5 @@
-import { describe, expect, it, beforeEach, afterEach, vi } from 'vitest';
-import { IParent, Parent, IFrame, IFrameOpts, IParentIFrameOpts } from "./index";
+import { describe, expect, it, afterEach, vi } from 'vitest';
+import { IParent, Parent, IFrame, IFrameOpts } from "./index";
 
 describe('Parent', () => {
     const VALID_IFRAME_CONTAINER_ID = 'valid-iframe-container-id';
@@ -33,13 +33,6 @@ describe('Parent', () => {
         document.body.innerHTML = `<div id="${VALID_IFRAME_CONTAINER_ID}"></div>`;
     }
 
-    const validIFrameOpts: IParentIFrameOpts = {
-        containerId: VALID_IFRAME_CONTAINER_ID,
-        id: VALID_IFRAME_ID,
-        src: VALID_IFRAME_SRC,
-        classes: VALID_IFRAME_CLASSES.split(' '),
-    }
-
     const validEffects = {
         noOp: () => {},
     }
@@ -51,9 +44,8 @@ describe('Parent', () => {
     describe('Constructor', () => {
         it('Returns expected API when provided valid configurations: ', () => {
             const parent = Parent({
-                iframeOpts: {
-                    ...validIFrameOpts,
-                },
+                iframeId: VALID_IFRAME_ID,
+                iframeSrc: VALID_IFRAME_SRC,
                 effects: {
                     ...validEffects,
                 }
@@ -68,27 +60,8 @@ describe('Parent', () => {
                     _setDOMWithValidContainerOnly();
                     expect(() => { 
                         Parent({
-                            iframeOpts: {
-                                ...validIFrameOpts,
-                                src: INVALID_IFRAME_SRC,
-                            },
-                            effects: {
-                                ...validEffects,
-                            }
-                        })
-                    }).toThrow();
-                });
-            })
-            describe('classes', () => {
-                it('Throws when {classes} are not an array of strings', () => {
-                    _setDOMWithValidContainerOnly();
-                    expect(() => { 
-                        Parent({
-                            iframeOpts: {
-                                ...validIFrameOpts,
-                                //@ts-ignore
-                                classes: [{}],
-                            },
+                            iframeId: VALID_IFRAME_ID,
+                            iframeSrc: INVALID_IFRAME_SRC,
                             effects: {
                                 ...validEffects,
                             }
@@ -101,9 +74,8 @@ describe('Parent', () => {
                     _setDOMWithValidContainerAndIFrame();
                     expect(() => { 
                         Parent({
-                            iframeOpts: {
-                                ...validIFrameOpts,
-                            },
+                            iframeId: VALID_IFRAME_ID,
+                            iframeSrc: VALID_IFRAME_SRC,
                             //@ts-ignore
                             effects: undefined,
                         })
@@ -113,9 +85,8 @@ describe('Parent', () => {
                     _setDOMWithValidContainerAndIFrame();
                     expect(() => { 
                         Parent({
-                            iframeOpts: {
-                                ...validIFrameOpts,
-                            },
+                            iframeId: VALID_IFRAME_ID,
+                            iframeSrc: VALID_IFRAME_SRC,
                             //@ts-ignore
                             effects: {
                                 //@ts-ignore
@@ -129,40 +100,12 @@ describe('Parent', () => {
     });
     describe('Lifecycle methods', () => {
         describe('init()', () => {
-            describe('containerId', () => {
-                it('Throws when an element with an id of {containerId} cannot be found', () => {
-                    _setDOMWithValidContainerAndIFrame();
-                    const p = Parent({
-                        iframeOpts: {
-                            ...validIFrameOpts,
-                            containerId: 'invalid'
-                        },
-                        effects: {
-                            ...validEffects,
-                        }
-                    });
-                    expect(() => { p.init() }).toThrow();
-                })
-                it('Throws when an element with an id of {containerId} was found, but it cannot be used as an iframe container', () => {
-                    _setDOMWithInvalidContainer();
-                    const p = Parent({
-                        iframeOpts: {
-                            ...validIFrameOpts,
-                        },
-                        effects: {
-                            ...validEffects,
-                        }
-                    })
-                    expect(() => { p.init() }).toThrow();
-                });
-            });
-            describe('id', () => {
+            describe('iframeId', () => {
                 it('Throws when an iframe with an id of {id} is found, but is not an iframe', () => {
                     _setDOMWithInvalidIFrame();
                     const p = Parent({
-                        iframeOpts: {
-                            ...validIFrameOpts,
-                        },
+                        iframeId: VALID_IFRAME_ID,
+                        iframeSrc: VALID_IFRAME_SRC,
                         effects: {
                             ...validEffects,
                         }
@@ -173,54 +116,24 @@ describe('Parent', () => {
             it.todo('Adds event listeners to a pre-existing iframe (if an iframe with id of {id} can be found)', () => {
                 _setDOMWithValidContainerAndIFrame();
                 const p = Parent({
-                    iframeOpts: {
-                        ...validIFrameOpts,
-                    },
+                    iframeId: VALID_IFRAME_ID,
+                    iframeSrc: VALID_IFRAME_SRC,
                     effects: {
                         ...validEffects,
                     }
                 })
                 p.init();
             });
-            it.todo('Creates a new iframe and adds event listeners (if an iframe with id of {id} cannot be found)', () => {
-                _setDOMWithValidContainerOnly();
-                const p = Parent({
-                    iframeOpts: {
-                        ...validIFrameOpts,
-                    },
-                    effects: {
-                        ...validEffects,
-                    }
-                })
-                p.init();
-            })
         });
-        describe('destroy()', () => {
-            it('Removes the iframe element from the DOM', () => {
-                _setDOMWithValidContainerOnly();
-                const p = Parent({
-                    iframeOpts: {
-                        ...validIFrameOpts,
-                    },
-                    effects: {
-                        ...validEffects,
-                    }
-                })
-                p.init();
-                expect(document.getElementById(VALID_IFRAME_ID)).toBeTruthy();
-                p.destroy();
-                expect(document.getElementById(VALID_IFRAME_ID)).toBeFalsy();
-            });
-        });
+        describe.todo('destroy()');
     });
     describe.todo('callIFrameEffect', () => {
         _setDOMWithValidContainerOnly();
         const mockParentFn = vi.fn();
         const mockIFrameFn = vi.fn();
         const parent = Parent({
-            iframeOpts: {
-                ...validIFrameOpts,
-            },
+            iframeId: VALID_IFRAME_ID,
+            iframeSrc: VALID_IFRAME_SRC,
             effects: {
                 sayHiToIFrame: mockParentFn,
             }

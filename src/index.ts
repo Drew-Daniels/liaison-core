@@ -1,4 +1,3 @@
-
 export interface IClient {
     init: ILifecycleMethod,
     destroy: ILifecycleMethod,
@@ -63,7 +62,8 @@ export type IParentHook = Omit<IParent, ILifecycles>;
 export type IIFrameHook = Omit<IFrame, ILifecycles>;
 
 export type ParentOpts = {
-  iframeOpts: IParentIFrameOpts,
+  iframeId: string;
+  iframeSrc: string;
   effects: ParentEffects,
 }
 
@@ -72,16 +72,8 @@ export type IFrameOpts = {
   effects: IFrameEffects,
 }
 
-export type IParentIFrameOpts = {
-  containerId: string,
-  id: string,
-  src: string,
-  classes?: Array<string> | undefined,
-}
-
-export function Parent({ iframeOpts: { containerId, id, src, classes }, effects }: ParentOpts): IParent {
-  _validateUrl(src);
-  _validateIFrameClasses();
+export function Parent({ iframeId, iframeSrc, effects }: ParentOpts): IParent {
+  _validateUrl(iframeSrc);
   _validateEffects(effects);
 
   return {
@@ -90,43 +82,14 @@ export function Parent({ iframeOpts: { containerId, id, src, classes }, effects 
     destroy,
   }
 
-  function _validateIFrameClasses() {
-    if (!(validClasses())) throw new Error('iframeOpts.classes must be an array of strings');
-    function validClasses() {
-      return classes?.every(cls => typeof cls === 'string');
-    }
-  }
-
   function init() {
-    _validateIFrameContainerId();
     _validateIFrameId();
-    const container = document.getElementById(containerId);
-    let iframe: HTMLIFrameElement;
-    if (!(document.getElementById(id))) {
-      iframe = document.createElement('iframe');
-      iframe.id = id;
-      iframe.src = src;
-      if (Array.isArray(classes)) {
-        classes.forEach(cls => iframe.classList.add(cls));
-      }
-      container!.appendChild(iframe);
-    }
     window.addEventListener('message', _onMessageEvent);
 
-    function _validateIFrameContainerId() {
-      const container = document.getElementById(containerId);
-      if (!container) throw new Error(`An element with an id of ${containerId} cannot be found`);
-      if (container && (!(_isContainer(container)))) throw new Error(`An element with an id of ${containerId} was found, but was a ${container.nodeName}.`)
-
-      function _isContainer(el: HTMLElement) {
-        return el.nodeName === 'DIV';
-      }
-    }
-
     function _validateIFrameId() {
-      const iframe = document.getElementById(id);
+      const iframe = document.getElementById(iframeId);
       if (iframe && (!(isIFrame(iframe)))) {
-        throw new Error(`An element with an id of ${id} was found, but was actually a ${iframe.nodeName}`)
+        throw new Error(`An element with an id of ${iframeId} was found, but was actually a ${iframe.nodeName}`)
       }
 
       function isIFrame(el: HTMLElement) {
@@ -136,7 +99,7 @@ export function Parent({ iframeOpts: { containerId, id, src, classes }, effects 
   }
 
   function _onMessageEvent(messageEvent: MessageEvent) {
-    if (_whitelisted(messageEvent, src)) {
+    if (_whitelisted(messageEvent, iframeSrc)) {
       if (_isSignal(messageEvent)) {
         const { name, args } = messageEvent.data;
         _callEffect(name, args);
@@ -151,17 +114,13 @@ export function Parent({ iframeOpts: { containerId, id, src, classes }, effects 
   }
 
   function destroy() {
-    const iframe = document.getElementById(id);
-    if (iframe) {
-      iframe.remove();
-    }
     window.removeEventListener('message', _onMessageEvent)
   }
 
   function callIFrameEffect(signal: Signal) {
-    const iframe = document.getElementById(id) as HTMLIFrameElement;
+    const iframe = document.getElementById(iframeId) as HTMLIFrameElement;
     if (iframe && iframe.contentWindow) {
-      iframe.contentWindow.postMessage(signal, src);
+      iframe.contentWindow.postMessage(signal, iframeSrc);
     }
   }
 }
@@ -206,8 +165,8 @@ export function IFrame({ parentOrigin, effects }: IFrameOpts): IFrame {
   }
 }
 
-function _whitelisted(messageEvent: MessageEvent, whitelistedOrigin: string) {
-  return messageEvent.origin === whitelistedOrigin;
+function _whitelisted(messageEvent: MessageEvent, trustedOrigin: string) {
+  return messageEvent.origin === trustedOrigin;
 }
 
 function _isSignal(e: MessageEvent): e is SignalEvent {
