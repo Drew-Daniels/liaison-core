@@ -236,8 +236,23 @@ const parent = Parent({
 ### Parent window
 The browser window that contains an embedded window
 
+### Parent model
+The function that can be used to define which iframe the parent window expects to receive signals from, and what effects can run when the iframe requests them to be run.
+```js
+// use named import
+import { Parent } from 'liaison-core';
+```
+
 ### IFrame window
 The embedded iframe window within the parent window
+
+### IFrame model
+The function that can be used to define which origin it can expect to receive signals from, and what effects can be run when the that origin requests them to be run.
+```js
+// use named import
+import { IFrame } from 'liaison-core';
+```
+
 
 ### Signals:
 A `Signal` is an object that contains all the data needed for one client to understand what function it needs to run and the arguments it needs to call that function with.
