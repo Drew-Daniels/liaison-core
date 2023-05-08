@@ -24,7 +24,7 @@ const parent = Parent({
     ...
 });
 ```
-Both `iframeId` and `iframeSrc` _are required_ and errors will be thrown if an iframe with an id of `{id}` and a `src` attribute of `{iframeSrc}` cannot be found on the page when the `Parent.init()` lifecycle method is called.
+Both `iframeId` and `iframeSrc` _are required_
 
 #### Lifecycle Methods
 The `Parent` model sets all event handlers when it is initially called (`Parent({ ... })`)
