@@ -1,5 +1,5 @@
 import { describe, expect, it, afterEach, vi } from 'vitest';
-import { IParent, Parent, IFrame, IFrameOpts } from "./index";
+import { Parent, IFrame, IFrameOpts } from "./index";
 
 describe('Parent', () => {
     const VALID_IFRAME_CONTAINER_ID = 'valid-iframe-container-id';
