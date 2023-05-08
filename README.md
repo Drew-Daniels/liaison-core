@@ -14,44 +14,36 @@ For most use cases, these side effects are going to be used for 2 general purpos
     - Ex.) Informing the parent window that an iframe has finished logging a user out of the iframe.
 
 #### Initialization
-The 
-
 The parent window should not blindly handle any requests sent to it. Instead, it needs to make sure that the origin of each message is whitelisted.
 
-This is handled by defining an iframe we get messages from in `iframeOpts`:
+This is handled by specifying the iframe we expect to receive messages from, and the url we should validate that those messages originate from.
 ```js
 const parent = Parent({
-    iframeOpts: {
-        // These options will either be used to:
-            // 1.) Create an iframe 
-                // a.) appended as a child node to the container with an id of {containerId}
-                // b.) with an id of {id}
-                // c.) with a src attribute of {src} AND
-                // d.) with class attribute of {classes}
-            // OR
-            // 2.) Use a pre-existing iframe
-                // a.) attached to a container with an id of {containerId}
-                // b.) with an id of {id}
-                // c.) with a src attribute of {src} AND
-                // d.) with class attribute of {classes}
-        containerId: 'my-iframe-container-id',
-        id: 'my-iframe-id',
-        src: 'http://embedded.com',
-        classes: ['cls1', 'cls2']
-    },
+    iframeId: 'my-iframe-id',
+    iframeSrc: 'http://embedded.com',
     ...
 });
 ```
-All of these options are _required_ except for`classes`, which is optional.
+Both `iframeId` and `iframeSrc` _are required_ and errors will be thrown if an iframe with an id of `{id}` and a `src` attribute of `{iframeSrc}` cannot be found on the page when the `Parent.init()` lifecycle method is called.
 
-Internally, the `src` option is used to check if a given message from an iframe is recognized.
-- If the message has an exactly matching `src`, it is whitelisted.
-- If the message has _any other origin_ than `src`, it is ignored and no side effects are run in the parent window for that message.
+#### Lifecycle Methods
+The `Parent` model has 2 lifecycle methods:
+1. `init()` - Called after providing initial configurations to `Parent({...})`.
+    - Initializes all of the provided event listeners (`effects`) on the parent window - enabling it to handle signals from the specified iframe. 
+2. `destroy()` - Can be called to remove all event listeners on the parent window that are listening for signals from the specified iframe.
+
+#### Message Handling (`Signals`)
+When the parent window receives a [MessageEvent](https://developer.mozilla.org/en-US/docs/Web/API/MessageEvent), it checks if:
+- If the MessageEvent has an `origin` exactly matching `src`. 
+    - If the message has _any other origin_ than `src`, it is completely ignored.
+- If the `origin` matches `src`, the Parent model checks to ensure that the `MessageEvent` matches the expected API (i.e., contains a `Signal`)
+- If the `MessageEvent` contains a `Signal`, this `Signal` can be matched to a corresponding `Effect` on the IFrame model.
 
 #### Effects
+_`Effects`_ (a.k.a., "side effects") are functions defined on the IFrame model, that the Parent model can expect to call on the IFrame model.
 ```js
 const parent = Parent({
-    iframeOpts: { ... },
+    ...
     effects: {
         // each `effect` can be synchronous
       sendToken: () => {
