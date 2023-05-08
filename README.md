@@ -142,12 +142,8 @@ const parent = Parent({
 #### All Together:
 ```js
 const parent = Parent({
-    iframeOpts: {
-        containerId: 'my-iframe-container-id',
-        id: 'my-iframe-id',
-        src: 'http://embedded.com',
-        classes: ['cls1', 'cls2']
-    },
+    iframeId: 'my-iframe-id',
+    iframeSrc: 'http://embedded.com',
     effects: {
       sendToken: ({ args, callIFrameEffect }) => {
         if (args.system === 'client1') {
