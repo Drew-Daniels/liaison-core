@@ -32,8 +32,9 @@
   "packageManager": "yarn@3.5.1",
   "repository": {
     "type": "git",
-    "url:": "https://github.com/Drew-Daniels/liaison-core"
+    "url:": "https://github.com/Drew-Daniels/liaison-core.git"
   },
+  "homepage": "https://github.com/Drew-Daniels/liaison-core#readme",
   "bugs": {
     "url": "https://github.com/Drew-Daniels/liaison-core/issues"
   },
