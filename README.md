@@ -46,7 +46,7 @@ When the parent window receives a [MessageEvent](https://developer.mozilla.org/e
 - If the `MessageEvent` contains a `Signal`, this `Signal` is then used to call a corresponding `Effect` on the IFrame model.
 
 #### Effects
-_`Effects`_ (a.k.a., "side effects") are functions defined on the IFrame model, that the Parent model can expect to call on the IFrame model.
+_`Effects`_ (a.k.a., "side effects") are functions defined on the Parent model, that the Parent model can expect to call on the IFrame model.
 ```js
 const parent = Parent({
     ...
