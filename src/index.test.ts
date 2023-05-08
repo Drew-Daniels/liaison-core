@@ -42,6 +42,19 @@ describe('Parent', () => {
     })
 
     describe('Constructor', () => {
+        describe('iframeId', () => {
+            it('Throws when an iframe with an id of {id} is found, but is not an iframe', () => {
+                _setDOMWithInvalidIFrame();
+                expect(() => { Parent({
+                    iframeId: VALID_IFRAME_ID,
+                    iframeSrc: VALID_IFRAME_SRC,
+                    effects: {
+                        ...validEffects,
+                    }
+                }) }).toThrow();
+            });
+        })
+        it.todo('Adds event listeners to a pre-existing iframe (if an iframe with id of {id} can be found)');
         it('Returns expected API when provided valid configurations: ', () => {
             const parent = Parent({
                 iframeId: VALID_IFRAME_ID,
@@ -50,7 +63,7 @@ describe('Parent', () => {
                     ...validEffects,
                 }
             })
-            expect(typeof parent.init === 'function').toBe(true);
+            expect(typeof parent.callIFrameEffect === 'function').toBe(true);
         })
     })
     describe('Options', () => {
@@ -98,58 +111,11 @@ describe('Parent', () => {
             });
         })
     });
-    describe('Lifecycle methods', () => {
-        describe('init()', () => {
-            describe('iframeId', () => {
-                it('Throws when an iframe with an id of {id} is found, but is not an iframe', () => {
-                    _setDOMWithInvalidIFrame();
-                    const p = Parent({
-                        iframeId: VALID_IFRAME_ID,
-                        iframeSrc: VALID_IFRAME_SRC,
-                        effects: {
-                            ...validEffects,
-                        }
-                    })
-                    expect(() => { p.init() }).toThrow();
-                });
-            })
-            it.todo('Adds event listeners to a pre-existing iframe (if an iframe with id of {id} can be found)', () => {
-                _setDOMWithValidContainerAndIFrame();
-                const p = Parent({
-                    iframeId: VALID_IFRAME_ID,
-                    iframeSrc: VALID_IFRAME_SRC,
-                    effects: {
-                        ...validEffects,
-                    }
-                })
-                p.init();
-            });
-        });
+    describe.todo('Lifecycle methods', () => {
         describe.todo('destroy()');
     });
     describe.todo('callIFrameEffect', () => {
-        _setDOMWithValidContainerOnly();
-        const mockParentFn = vi.fn();
-        const mockIFrameFn = vi.fn();
-        const parent = Parent({
-            iframeId: VALID_IFRAME_ID,
-            iframeSrc: VALID_IFRAME_SRC,
-            effects: {
-                sayHiToIFrame: mockParentFn,
-            }
-        });
-        parent.init();
-        const iframe = IFrame({
-            parentOrigin: VALID_IFRAME_SRC,
-            effects: {
-                sayHiToParent: mockIFrameFn,
-            }
-        });
-        iframe.init();
-        it('is able to call a function on the iframe model with no arguments', () => {
-            parent.callIFrameEffect({ name: 'sayHiToParent', args: {} });
-            expect(mockIFrameFn).toHaveBeenCalled();
-        });
+        it.todo('is able to call a function on the iframe model with no arguments');
         it.todo('is able to call a function with arguments');
         it.todo('is able to call a')
     });
@@ -166,9 +132,6 @@ describe('IFrame', () => {
     describe('Constructor', () => {
         describe('Returns an object with: ', () => {
             const i = IFrame(validOpts);
-            it('init() method', () => {
-                expect(typeof i.init === 'function').toBe(true);
-            });
             it('callParentEffect', () => {
                 expect(typeof i.callParentEffect === 'function').toBe(true);
             });
@@ -198,7 +161,6 @@ describe('IFrame', () => {
     });
     describe('Lifecycle methods', () => {
         // TODO: Add mock to check if window.addEventListener and window.removeEventListener called with the right args
-        describe.todo('init()');
         describe.todo('destroy()');
     });
     describe.todo('callParentEffect');

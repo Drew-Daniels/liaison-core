@@ -1,9 +1,6 @@
 export interface IClient {
-    init: ILifecycleMethod,
     destroy: ILifecycleMethod,
-  }
-  
-type ILifecycles = "init" | "destroy";
+}
 type ILifecycleMethod = () => void;
 
 export type ParentEffects = {
@@ -58,8 +55,8 @@ export interface IFrame extends IClient {
   callParentEffect: (signal: Signal) => void,
 }
 
-export type IParentHook = Omit<IParent, ILifecycles>;
-export type IIFrameHook = Omit<IFrame, ILifecycles>;
+export type IParentHook = Omit<IParent, 'destroy'>;
+export type IIFrameHook = Omit<IFrame, 'destroy'>;
 
 export type ParentOpts = {
   iframeId: string;
@@ -73,17 +70,18 @@ export type IFrameOpts = {
 }
 
 export function Parent({ iframeId, iframeSrc, effects }: ParentOpts): IParent {
-  _validateUrl(iframeSrc);
-  _validateEffects(effects);
+
+  _init();
 
   return {
-    init,
     callIFrameEffect,
     destroy,
   }
 
-  function init() {
+  function _init() {
     _validateIFrameId();
+    _validateUrl(iframeSrc);
+    _validateEffects(effects);
     window.addEventListener('message', _onMessageEvent);
 
     function _validateIFrameId() {
@@ -127,16 +125,16 @@ export function Parent({ iframeId, iframeSrc, effects }: ParentOpts): IParent {
 
 export function IFrame({ parentOrigin, effects }: IFrameOpts): IFrame {
 
-  _validateUrl(parentOrigin);
-  _validateEffects(effects);
+  _init();
 
   return {
-    init,
     callParentEffect,
     destroy,
   }
 
-  function init() {
+  function _init() {
+    _validateUrl(parentOrigin);
+    _validateEffects(effects);
     window.addEventListener('message', _onMessageEvent);
   }
 
