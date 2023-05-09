@@ -19,13 +19,13 @@ type EffectArgs = {
 }
 
 type ParentEffectContext = {
-  args: EffectArgs | undefined,
   callIFrameEffect: (signal: Signal) => void,
+  args: EffectArgs,
 }
 
 type IFrameEffectContext = {
-  args: EffectArgs | undefined,
   callParentEffect: (signal: Signal) => void,
+  args: EffectArgs,
 }
 
 export interface SignalEvent extends MessageEvent {
