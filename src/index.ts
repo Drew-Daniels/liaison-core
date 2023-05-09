@@ -58,9 +58,13 @@ export interface IFrame extends IClient {
 export type IParentHook = Omit<IParent, 'destroy'>;
 export type IIFrameHook = Omit<IFrame, 'destroy'>;
 
+export interface ParentIFrameOpts {
+  id: string;
+  src: string;
+}
+
 export type ParentOpts = {
-  iframeId: string;
-  iframeSrc: string;
+  iframe: ParentIFrameOpts,
   effects: ParentEffects,
 }
 
@@ -69,7 +73,7 @@ export type IFrameOpts = {
   effects: IFrameEffects,
 }
 
-export function Parent({ iframeId, iframeSrc, effects }: ParentOpts): IParent {
+export function Parent({ iframe: { id, src }, effects }: ParentOpts): IParent {
 
   _init();
 
@@ -80,14 +84,14 @@ export function Parent({ iframeId, iframeSrc, effects }: ParentOpts): IParent {
 
   function _init() {
     _validateIFrameId();
-    _validateUrl(iframeSrc);
+    _validateUrl(src);
     _validateEffects(effects);
     window.addEventListener('message', _onMessageEvent);
 
     function _validateIFrameId() {
-      const iframe = document.getElementById(iframeId);
+      const iframe = document.getElementById(id);
       if (iframe && (!(isIFrame(iframe)))) {
-        throw new Error(`An element with an id of ${iframeId} was found, but was actually a ${iframe.nodeName}`)
+        throw new Error(`An element with an id of ${id} was found, but was actually a ${iframe.nodeName}`)
       }
 
       function isIFrame(el: HTMLElement) {
@@ -97,7 +101,7 @@ export function Parent({ iframeId, iframeSrc, effects }: ParentOpts): IParent {
   }
 
   function _onMessageEvent(messageEvent: MessageEvent) {
-    if (_whitelisted(messageEvent, iframeSrc)) {
+    if (_whitelisted(messageEvent, src)) {
       if (_isSignal(messageEvent)) {
         const { name, args } = messageEvent.data;
         _callEffect(name, args);
@@ -118,19 +122,19 @@ export function Parent({ iframeId, iframeSrc, effects }: ParentOpts): IParent {
   }
 
   function callIFrameEffect(signal: Signal) {
-    const el = document.getElementById(iframeId);
+    const el = document.getElementById(id);
     if (el === null) {
-      console.error(`[liaison] could not find an element with an id of ${iframeId}`);
+      console.error(`[liaison] could not find an element with an id of ${id}`);
       return;
     }
     if (!(isIFrame(el))) {
-      console.error(`[liaison] found an element with an id of ${iframeId}, but it was not an iframe. Instead, it was a ${el.nodeName}`)
+      console.error(`[liaison] found an element with an id of ${id}, but it was not an iframe. Instead, it was a ${el.nodeName}`)
       return;
     }
     if (el && el.contentWindow && isIFrame(el)) {
-      el.contentWindow.postMessage(signal, iframeSrc);
+      el.contentWindow.postMessage(signal, src);
     } else {
-      console.error(`[liaison] could not find an iframe with an id of ${iframeId}`);
+      console.error(`[liaison] could not find an iframe with an id of ${id}`);
     }
   }
 

@@ -32,8 +32,10 @@ describe('Parent', () => {
             it('Throws when an iframe with an id of {id} is found, but is not an iframe', () => {
                 _setDOMWithInvalidIFrame();
                 expect(() => { Parent({
-                    iframeId: VALID_IFRAME_ID,
-                    iframeSrc: VALID_IFRAME_SRC,
+                    iframe: {
+                        id: VALID_IFRAME_ID,
+                        src: VALID_IFRAME_SRC,
+                    },
                     effects: {
                         ...validEffects,
                     }
@@ -44,8 +46,10 @@ describe('Parent', () => {
             it('Throws when {iframeSrc} is not a valid URL', () => {
                 expect(() => { 
                     Parent({
-                        iframeId: VALID_IFRAME_ID,
-                        iframeSrc: INVALID_IFRAME_SRC,
+                        iframe: {
+                            id: VALID_IFRAME_ID,
+                            src: INVALID_IFRAME_SRC,
+                        },
                         effects: {
                             ...validEffects,
                         }
@@ -58,8 +62,10 @@ describe('Parent', () => {
                 _setDOMWithValidContainerAndIFrame();
                 expect(() => { 
                     Parent({
-                        iframeId: VALID_IFRAME_ID,
-                        iframeSrc: VALID_IFRAME_SRC,
+                        iframe: {
+                            id: VALID_IFRAME_ID,
+                            src: VALID_IFRAME_SRC,
+                        },
                         //@ts-ignore
                         effects: undefined,
                     })
@@ -69,8 +75,10 @@ describe('Parent', () => {
                 _setDOMWithValidContainerAndIFrame();
                 expect(() => { 
                     Parent({
-                        iframeId: VALID_IFRAME_ID,
-                        iframeSrc: VALID_IFRAME_SRC,
+                        iframe: {
+                            id: VALID_IFRAME_ID,
+                            src: VALID_IFRAME_SRC,
+                        },
                         //@ts-ignore
                         effects: {
                             //@ts-ignore
@@ -82,8 +90,10 @@ describe('Parent', () => {
         })
         it('Returns expected API when provided valid configurations: ', () => {
             const parent = Parent({
-                iframeId: VALID_IFRAME_ID,
-                iframeSrc: VALID_IFRAME_SRC,
+                iframe: {
+                    id: VALID_IFRAME_ID,
+                    src: VALID_IFRAME_SRC,
+                },
                 effects: {
                     ...validEffects,
                 }

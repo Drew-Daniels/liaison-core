@@ -17,12 +17,14 @@ For most use cases, these side effects are going to be used for 2 general purpos
 The Parent factory function specifies the id of the iframe we expect to receive messages from, and the [origin](https://html.spec.whatwg.org/multipage/comms.html#dom-messageevent-origin-dev) we should validate that those messages originate from.
 ```js
 const parent = Parent({
-    iframeId: 'my-iframe-id',
-    iframeSrc: 'http://embedded.com',
+    iframe: {
+        id: 'my-iframe-id',
+        src: 'https://embedded.com',
+    }
     ...
 });
 ```
-Both `iframeId` and `iframeSrc` _are required_.
+Both `iframe.id` and `iframe.src` _are required_.
 
 #### Lifecycle Methods
 The `Parent` model sets all event handlers when it is initially called (`Parent({ ... })`)
@@ -40,7 +42,7 @@ parent.destroy();
 When the parent window receives a [MessageEvent](https://developer.mozilla.org/en-US/docs/Web/API/MessageEvent), the Parent model checks if:
 - If the MessageEvent has an `origin` exactly matching `src`. 
     - If the message has _any other origin_ than `src`, it is completely ignored.
-- If the `origin` matches `iframeSrc`, the Parent model checks to ensure that the data passed in the `MessageEvent` matches the expected API (i.e., contains a `Signal`)
+- If the `origin` matches `src`, the Parent model checks to ensure that the data passed in the `MessageEvent` matches the expected API (i.e., contains a `Signal`)
 - If the `MessageEvent` contains a `Signal`, this `Signal` is then used to call a corresponding `Effect` on the IFrame model.
 
 #### Effects
@@ -140,8 +142,10 @@ const parent = Parent({
 #### All Together:
 ```js
 const parent = Parent({
-    iframeId: 'my-iframe-id',
-    iframeSrc: 'http://embedded.com',
+    iframe: {
+        id: 'my-iframe-id',
+        src: 'https://embedded.com',
+    },
     effects: {
       sendToken: ({ args, callIFrameEffect }) => {
         if (args.system === 'client1') {
