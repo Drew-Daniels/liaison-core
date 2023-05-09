@@ -103,13 +103,13 @@ export function Parent({ iframe: { id, src }, effects }: ParentOpts): IParent {
   function _onMessageEvent(messageEvent: MessageEvent) {
     if (_whitelisted(messageEvent, src)) {
       if (_isSignal(messageEvent)) {
-        const { name, args } = messageEvent.data;
+        const { name, args = {} } = messageEvent.data;
         _callEffect(name, args);
       }
     }
   }
 
-  function _callEffect(name: string, args: EffectArgs | undefined) {
+  function _callEffect(name: string, args: object) {
     if (effects[name]) {
       effects[name]({ args: args, callIFrameEffect });
     } else {
@@ -165,13 +165,13 @@ export function IFrame({ parentOrigin, effects }: IFrameOpts): IFrame {
   function _onMessageEvent(messageEvent: MessageEvent) {
     if (_whitelisted(messageEvent, parentOrigin)) {
       if (_isSignal(messageEvent)) {
-        const { name, args } = messageEvent.data;
+        const { name, args = {} } = messageEvent.data;
         _callEffect(name, args);
       }
     }
   }
 
-  function _callEffect(name: string, args: EffectArgs | undefined) {
+  function _callEffect(name: string, args: object) {
     if (effects[name]) {
       effects[name]({ args, callParentEffect });
     } else {
