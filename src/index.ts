@@ -109,7 +109,7 @@ export function Parent({ iframeId, iframeSrc, effects }: ParentOpts): IParent {
     if (effects[name]) {
       effects[name]({ args, callIFrameEffect });
     } else {
-      throw new Error(`Could not find an effect on the Parent model called "${name}"`)
+      console.error(`[liaison] could not find an effect on the Parent model called "${name}"`)
     }
   }
 
@@ -118,10 +118,24 @@ export function Parent({ iframeId, iframeSrc, effects }: ParentOpts): IParent {
   }
 
   function callIFrameEffect(signal: Signal) {
-    const iframe = document.getElementById(iframeId) as HTMLIFrameElement;
-    if (iframe && iframe.contentWindow) {
-      iframe.contentWindow.postMessage(signal, iframeSrc);
+    const el = document.getElementById(iframeId);
+    if (el === null) {
+      console.error(`[liaison] could not find an element with an id of ${iframeId}`);
+      return;
     }
+    if (!(isIFrame(el))) {
+      console.error(`[liaison] found an element with an id of ${iframeId}, but it was not an iframe. Instead, it was a ${el.nodeName}`)
+      return;
+    }
+    if (el && el.contentWindow && isIFrame(el)) {
+      el.contentWindow.postMessage(signal, iframeSrc);
+    } else {
+      console.error(`[liaison] could not find an iframe with an id of ${iframeId}`);
+    }
+  }
+
+  function isIFrame(el: HTMLElement): el is HTMLIFrameElement {
+    return el.nodeName === 'IFRAME'
   }
 }
 

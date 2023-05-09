@@ -121,7 +121,7 @@ describe('IFrame', () => {
         });
     });
     describe('Options', () => {
-        it('Throws when parentOrigin is not a valid URL', () => {
+        it('Throws when {parentOrigin} is not a valid URL', () => {
             expect(() => {
                 IFrame({
                     ...validOpts, 
@@ -129,7 +129,7 @@ describe('IFrame', () => {
                 });
             }).toThrow();
         });
-        it('Throws when effects are not functions', () => {
+        it('Throws when {effects} is not a map of functions', () => {
             expect(() => {
                 IFrame({
                     ...validOpts,
