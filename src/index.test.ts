@@ -28,7 +28,7 @@ describe('Parent', () => {
     })
 
     describe('Constructor', () => {
-        describe('iframeId', () => {
+        describe('iframe.id', () => {
             it('Throws when an iframe with an id of {id} is found, but is not an iframe', () => {
                 _setDOMWithInvalidIFrame();
                 expect(() => { Parent({
@@ -42,8 +42,8 @@ describe('Parent', () => {
                 }) }).toThrow();
             });
         })
-        describe('iframeSrc', () => {
-            it('Throws when {iframeSrc} is not a valid URL', () => {
+        describe('iframe.src', () => {
+            it('Throws when {iframe.src} is not a valid URL', () => {
                 expect(() => { 
                     Parent({
                         iframe: {
