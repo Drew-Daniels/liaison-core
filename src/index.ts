@@ -108,6 +108,8 @@ export function Parent({ iframeId, iframeSrc, effects }: ParentOpts): IParent {
   function _callEffect(name: string, args: object) {
     if (effects[name]) {
       effects[name]({ args, callIFrameEffect });
+    } else {
+      throw new Error(`Could not find an effect on the Parent model called "${name}"`)
     }
   }
 
@@ -154,6 +156,8 @@ export function IFrame({ parentOrigin, effects }: IFrameOpts): IFrame {
   function _callEffect(name: string, args: object) {
     if (effects[name]) {
       effects[name]({ args, callParentEffect });
+    } else {
+      throw new Error(`Could not find an effect on the IFrame model called "${name}"`)
     }
   }
 

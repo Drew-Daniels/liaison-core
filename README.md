@@ -14,9 +14,7 @@ For most use cases, these side effects are going to be used for 2 general purpos
     - Ex.) Informing the parent window that an iframe has finished logging a user out of the iframe.
 
 #### Initialization
-The parent window should not blindly handle any requests sent to it. Instead, it needs to make sure that the origin of each message is whitelisted.
-
-This is handled by specifying the iframe we expect to receive messages from, and the url we should validate that those messages originate from.
+The Parent factory function specifies the id of the iframe we expect to receive messages from, and the [origin](https://html.spec.whatwg.org/multipage/comms.html#dom-messageevent-origin-dev) we should validate that those messages originate from.
 ```js
 const parent = Parent({
     iframeId: 'my-iframe-id',
@@ -24,25 +22,25 @@ const parent = Parent({
     ...
 });
 ```
-Both `iframeId` and `iframeSrc` _are required_
+Both `iframeId` and `iframeSrc` _are required_.
 
 #### Lifecycle Methods
 The `Parent` model sets all event handlers when it is initially called (`Parent({ ... })`)
 
-The `destroy()` method can be called to remove all event listeners on the parent window that are listening for signals from the specified iframe:
+The `destroy()` removes all event listeners on the parent window that are listening for signals from the specified iframe:
 ```js
-// event handlers are initialized with window.addEventListener(...)
+// initialize event handlers
 const parent = Parent({ ... });
 
-// event handlers are removed with window.removeEventListener(...)
+// remove event handlers if needed
 parent.destroy();
 ```
 
 #### Message Handling (`Signals`)
-When the parent window receives a [MessageEvent](https://developer.mozilla.org/en-US/docs/Web/API/MessageEvent), it checks if:
+When the parent window receives a [MessageEvent](https://developer.mozilla.org/en-US/docs/Web/API/MessageEvent), the Parent model checks if:
 - If the MessageEvent has an `origin` exactly matching `src`. 
     - If the message has _any other origin_ than `src`, it is completely ignored.
-- If the `origin` matches `src`, the Parent model checks to ensure that the `MessageEvent` matches the expected API (i.e., contains a `Signal`)
+- If the `origin` matches `iframeSrc`, the Parent model checks to ensure that the data passed in the `MessageEvent` matches the expected API (i.e., contains a `Signal`)
 - If the `MessageEvent` contains a `Signal`, this `Signal` is then used to call a corresponding `Effect` on the IFrame model.
 
 #### Effects

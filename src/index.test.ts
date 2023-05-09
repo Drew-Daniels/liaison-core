@@ -2,35 +2,21 @@ import { describe, expect, it, afterEach, vi } from 'vitest';
 import { Parent, IFrame, IFrameOpts } from "./index";
 
 describe('Parent', () => {
-    const VALID_IFRAME_CONTAINER_ID = 'valid-iframe-container-id';
     const VALID_IFRAME_ID = 'valid-iframe-id';
     const VALID_IFRAME_SRC = 'http://localhost:3000';
-    const VALID_IFRAME_CLASSES = 'spam test';
 
     const INVALID_IFRAME_SRC = 'invalid-iframe-src-url';
 
     function _setDOMWithValidContainerAndIFrame() {
         document.body.innerHTML = `
-            <div id="${VALID_IFRAME_CONTAINER_ID}">
-                <iframe id="${VALID_IFRAME_ID}" src="${VALID_IFRAME_SRC}" class="${VALID_IFRAME_CLASSES}"></iframe>
-            </div>
+            <iframe id="${VALID_IFRAME_ID}" src="${VALID_IFRAME_SRC}"></iframe>
         `;
-    }
-
-    function _setDOMWithInvalidContainer() {
-        document.body.innerHTML = `<p id="${VALID_IFRAME_CONTAINER_ID}"></div>`;
     }
 
     function _setDOMWithInvalidIFrame() {
         document.body.innerHTML = `
-            <div id="${VALID_IFRAME_CONTAINER_ID}">
-                <p id="${VALID_IFRAME_ID}"></p>
-            </div>
+            <p id="${VALID_IFRAME_ID}"></p>
         `;
-    }
-
-    function _setDOMWithValidContainerOnly() {
-        document.body.innerHTML = `<div id="${VALID_IFRAME_CONTAINER_ID}"></div>`;
     }
 
     const validEffects = {
@@ -54,7 +40,46 @@ describe('Parent', () => {
                 }) }).toThrow();
             });
         })
-        it.todo('Adds event listeners to a pre-existing iframe (if an iframe with id of {id} can be found)');
+        describe('iframeSrc', () => {
+            it('Throws when {iframeSrc} is not a valid URL', () => {
+                expect(() => { 
+                    Parent({
+                        iframeId: VALID_IFRAME_ID,
+                        iframeSrc: INVALID_IFRAME_SRC,
+                        effects: {
+                            ...validEffects,
+                        }
+                    })
+                }).toThrow();
+            });
+        });
+        describe('effects', () => {
+            it('Thows when no effects are created', () => {
+                _setDOMWithValidContainerAndIFrame();
+                expect(() => { 
+                    Parent({
+                        iframeId: VALID_IFRAME_ID,
+                        iframeSrc: VALID_IFRAME_SRC,
+                        //@ts-ignore
+                        effects: undefined,
+                    })
+                }).toThrow();
+            });
+            it('Throws when effects are not functions', () => {
+                _setDOMWithValidContainerAndIFrame();
+                expect(() => { 
+                    Parent({
+                        iframeId: VALID_IFRAME_ID,
+                        iframeSrc: VALID_IFRAME_SRC,
+                        //@ts-ignore
+                        effects: {
+                            //@ts-ignore
+                            willError: 'spam',
+                        },
+                    })
+                }).toThrow();
+            })
+        })
         it('Returns expected API when provided valid configurations: ', () => {
             const parent = Parent({
                 iframeId: VALID_IFRAME_ID,
@@ -66,51 +91,6 @@ describe('Parent', () => {
             expect(typeof parent.callIFrameEffect === 'function').toBe(true);
         })
     })
-    describe('Options', () => {
-        describe('iframeOpts: ', () => {
-            describe('src', () => {
-                it('Throws when {src} is not a valid URL', () => {
-                    _setDOMWithValidContainerOnly();
-                    expect(() => { 
-                        Parent({
-                            iframeId: VALID_IFRAME_ID,
-                            iframeSrc: INVALID_IFRAME_SRC,
-                            effects: {
-                                ...validEffects,
-                            }
-                        })
-                    }).toThrow();
-                });
-            })
-            describe('Effects', () => {
-                it('Thows when no effects are created', () => {
-                    _setDOMWithValidContainerAndIFrame();
-                    expect(() => { 
-                        Parent({
-                            iframeId: VALID_IFRAME_ID,
-                            iframeSrc: VALID_IFRAME_SRC,
-                            //@ts-ignore
-                            effects: undefined,
-                        })
-                    }).toThrow();
-                });
-                it('Throws when effects are not functions', () => {
-                    _setDOMWithValidContainerAndIFrame();
-                    expect(() => { 
-                        Parent({
-                            iframeId: VALID_IFRAME_ID,
-                            iframeSrc: VALID_IFRAME_SRC,
-                            //@ts-ignore
-                            effects: {
-                                //@ts-ignore
-                                willError: 'spam',
-                            },
-                        })
-                    }).toThrow();
-                })
-            });
-        })
-    });
     describe.todo('Lifecycle methods', () => {
         describe.todo('destroy()');
     });
