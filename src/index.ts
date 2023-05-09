@@ -19,12 +19,12 @@ type EffectArgs = {
 }
 
 type ParentEffectContext = {
-  args: EffectArgs,
+  args: EffectArgs | undefined,
   callIFrameEffect: (signal: Signal) => void,
 }
 
 type IFrameEffectContext = {
-  args: EffectArgs,
+  args: EffectArgs | undefined,
   callParentEffect: (signal: Signal) => void,
 }
 
@@ -34,7 +34,7 @@ export interface SignalEvent extends MessageEvent {
 
 export interface Signal {
   name: string,
-  args: EffectArgs,
+  args?: EffectArgs,
 }
 
 export interface ParentEffectArgs {
@@ -109,9 +109,9 @@ export function Parent({ iframe: { id, src }, effects }: ParentOpts): IParent {
     }
   }
 
-  function _callEffect(name: string, args: object) {
+  function _callEffect(name: string, args: EffectArgs | undefined) {
     if (effects[name]) {
-      effects[name]({ args, callIFrameEffect });
+      effects[name]({ args: args, callIFrameEffect });
     } else {
       console.error(`[liaison] could not find an effect on the Parent model called "${name}"`)
     }
@@ -171,7 +171,7 @@ export function IFrame({ parentOrigin, effects }: IFrameOpts): IFrame {
     }
   }
 
-  function _callEffect(name: string, args: object) {
+  function _callEffect(name: string, args: EffectArgs | undefined) {
     if (effects[name]) {
       effects[name]({ args, callParentEffect });
     } else {
