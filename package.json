@@ -1,6 +1,6 @@
 {
   "name": "liaison-core",
-  "version": "0.0.15",
+  "version": "0.0.16",
   "author": "Drew Daniels",
   "description": "A simple messaging library meant to enable easy CORS communication between windows and embedded iframes - using the browser postMessage API.",
   "license": "MIT",
